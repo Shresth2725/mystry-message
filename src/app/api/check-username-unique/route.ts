@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User.model";
-import z, { success } from "zod";
+import { z } from "zod";
 import { usernameValidation } from "@/schemas/signUpSchema";
 
 const UsernameQuerySchema = z.object({
@@ -12,6 +12,7 @@ export async function GET(request: Request) {
 
   try {
     const { searchParams } = new URL(request.url);
+
     const queryParams = {
       username: searchParams.get("username"),
     };
@@ -24,7 +25,7 @@ export async function GET(request: Request) {
         {
           success: false,
           message:
-            usernameErrors?.length > 0
+            usernameErrors.length > 0
               ? usernameErrors.join(", ")
               : "Invalid query parameter",
         },
@@ -51,15 +52,10 @@ export async function GET(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error checking username: ", error);
+    console.error("Error checking username:", error);
     return Response.json(
-      {
-        success: false,
-        message: `Error Checking Username: ${error}`,
-      },
-      {
-        status: 500,
-      }
+      { success: false, message: "Error checking username" },
+      { status: 500 }
     );
   }
 }
